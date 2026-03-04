@@ -1,4 +1,4 @@
-# Nusrat Jahan - Portfolio Website
+# Fitness/Nutritionist - Portfolio Website
 
 A modern, responsive portfolio website for Nusrat Jahan, a dedicated Nutritionist and Food & Nutrition professional.
 
@@ -21,7 +21,7 @@ A modern, responsive portfolio website for Nusrat Jahan, a dedicated Nutritionis
 ## Files Structure
 
 ```
-Nisha Portfolio/
+Fitness Portfolio/
 ├── index.html      # Main HTML file
 ├── styles.css      # CSS styles and animations
 ├── script.js       # JavaScript interactions
@@ -114,4 +114,5 @@ For any queries regarding this portfolio:
 
 ---
 
-© 2026 Nusrat Jahan. All Rights Reserved.
+© 2026 T. M. Mehrab Hasan. All Rights Reserved.
+
