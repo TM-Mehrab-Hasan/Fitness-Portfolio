@@ -156,7 +156,7 @@ const animateOnScroll = (entries, observer) => {
 const observer = new IntersectionObserver(animateOnScroll, observerOptions);
 
 // Add animation class to elements
-document.querySelectorAll('.timeline-item, .edu-card, .project-card, .cert-card, .ref-card, .contact-item, .card-3d').forEach(el => {
+document.querySelectorAll('.timeline-item, .edu-card, .project-card, .cert-card, .ref-card, .contact-item, .spec-card, .info-card, .skills-block').forEach(el => {
     el.classList.add('animate-on-scroll');
     observer.observe(el);
 });
@@ -183,7 +183,7 @@ function addTiltEffect(element) {
 }
 
 // Apply tilt effect to cards
-document.querySelectorAll('.card-3d, .edu-card-inner, .cert-card').forEach(card => {
+document.querySelectorAll('.spec-card, .edu-card-inner, .cert-card').forEach(card => {
     addTiltEffect(card);
 });
 
