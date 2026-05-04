@@ -1,3 +1,51 @@
+// ===== Ultra-Smooth Scrolling =====
+class SmoothScroll {
+    constructor() {
+        this.targetY = window.scrollY;
+        this.currentY = window.scrollY;
+        this.easing = 0.075; // Adjust this (0.05 to 0.1) for different levels of "smoothness"
+        this.isScrolling = false;
+        
+        this.init();
+    }
+
+    init() {
+        window.addEventListener('wheel', (e) => this.onWheel(e), { passive: false });
+        window.addEventListener('scroll', () => {
+            if (!this.isScrolling) {
+                this.targetY = window.scrollY;
+                this.currentY = window.scrollY;
+            }
+        });
+        this.animate();
+    }
+
+    onWheel(e) {
+        e.preventDefault();
+        this.isScrolling = true;
+        this.targetY += e.deltaY;
+        this.targetY = Math.max(0, Math.min(this.targetY, document.documentElement.scrollHeight - window.innerHeight));
+    }
+
+    animate() {
+        const diff = this.targetY - this.currentY;
+        if (Math.abs(diff) > 0.1) {
+            this.currentY += diff * this.easing;
+            window.scrollTo(0, this.currentY);
+        } else {
+            this.isScrolling = false;
+        }
+        requestAnimationFrame(() => this.animate());
+    }
+
+    scrollTo(targetY) {
+        this.isScrolling = true;
+        this.targetY = targetY;
+    }
+}
+
+const smoother = new SmoothScroll();
+
 // ===== Preloader =====
 window.addEventListener('load', () => {
     const preloader = document.querySelector('.preloader');
@@ -219,20 +267,14 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             const elementPosition = target.getBoundingClientRect().top;
             const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
             
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth'
-            });
+            smoother.scrollTo(offsetPosition);
         }
     });
 });
 
 // ===== Back to Top =====
 backToTop.addEventListener('click', () => {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
+    smoother.scrollTo(0);
 });
 
 // ===== Contact Form =====
