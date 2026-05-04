@@ -291,7 +291,7 @@ const animateOnScroll = (entries, observer) => {
 const observer = new IntersectionObserver(animateOnScroll, observerOptions);
 
 // Add animation class to elements
-document.querySelectorAll('.timeline-item, .edu-card, .project-card, .cert-card, .ref-card, .contact-item, .spec-card, .info-card, .skills-block').forEach(el => {
+document.querySelectorAll('.timeline-item, .edu-card, .project-card, .cert-card, .ref-card, .contact-item, .spec-card, .info-card, .skills-block, .calc-container').forEach(el => {
     el.classList.add('animate-on-scroll');
     observer.observe(el);
 });
