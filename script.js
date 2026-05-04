@@ -46,6 +46,93 @@ class SmoothScroll {
 
 const smoother = new SmoothScroll();
 
+// ===== Dark Mode Toggle =====
+const themeToggle = document.getElementById('theme-toggle');
+const body = document.body;
+
+// Check for saved theme preference
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme) {
+    body.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+}
+
+themeToggle.addEventListener('click', () => {
+    const currentTheme = body.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    body.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    updateThemeIcon(newTheme);
+});
+
+function updateThemeIcon(theme) {
+    const icon = themeToggle.querySelector('i');
+    if (theme === 'dark') {
+        icon.classList.replace('fa-moon', 'fa-sun');
+    } else {
+        icon.classList.replace('fa-sun', 'fa-moon');
+    }
+}
+
+// ===== Hydration Calculator =====
+const weightInput = document.getElementById('weight');
+const activitySelect = document.getElementById('activity');
+const calculateBtn = document.getElementById('calculate-btn');
+const calcResult = document.getElementById('calc-result');
+const waterValue = document.getElementById('water-value');
+const glassesValue = document.getElementById('glasses-value');
+const resultPlaceholder = calcResult.querySelector('.result-placeholder');
+const resultDisplay = calcResult.querySelector('.result-display');
+
+calculateBtn.addEventListener('click', () => {
+    const weight = parseFloat(weightInput.value);
+    const activity = activitySelect.value;
+    
+    if (!weight || weight < 20 || weight > 300) {
+        alert('Please enter a valid weight between 20kg and 300kg');
+        return;
+    }
+    
+    // Base calculation: 35ml per kg of body weight
+    let liters = (weight * 35) / 1000;
+    
+    // Add based on activity level
+    const activityMultipliers = {
+        'sedentary': 0,
+        'light': 0.3,
+        'moderate': 0.6,
+        'active': 1.0
+    };
+    
+    liters += activityMultipliers[activity];
+    
+    // Animate the result
+    resultPlaceholder.classList.add('hidden');
+    resultDisplay.classList.remove('hidden');
+    
+    // Simple counter animation for liters
+    let currentLiters = 0;
+    const targetLiters = liters;
+    const duration = 1000;
+    const startTime = performance.now();
+    
+    function updateCounter(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        const currentValue = progress * targetLiters;
+        waterValue.textContent = currentValue.toFixed(1);
+        glassesValue.textContent = Math.round(currentValue / 0.25);
+        
+        if (progress < 1) {
+            requestAnimationFrame(updateCounter);
+        }
+    }
+    
+    requestAnimationFrame(updateCounter);
+});
+
 // ===== Preloader =====
 window.addEventListener('load', () => {
     const preloader = document.querySelector('.preloader');

@@ -80,13 +80,18 @@
                 <a href="#experience" class="nav-link">Experience</a>
                 <a href="#education" class="nav-link">Education</a>
                 <a href="#projects" class="nav-link">Projects</a>
-                <a href="#certifications" class="nav-link">Certifications</a>
+                <a href="#calculator" class="nav-link">Calculator</a>
                 <a href="#contact" class="nav-link">Contact</a>
             </div>
-            <div class="hamburger" id="hamburger">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
+            <div class="nav-actions">
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="hamburger" id="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
             </div>
         </div>
     </nav>
@@ -278,7 +283,7 @@
                 <div class="title-underline"></div>
             </div>
             <div class="timeline">
-                <div class="timeline-item" data-aos="fade-right">
+                <div class="timeline-item">
                     <div class="timeline-marker"></div>
                     <div class="timeline-content">
                         <div class="timeline-header">
@@ -299,7 +304,7 @@
                     </div>
                 </div>
 
-                <div class="timeline-item" data-aos="fade-left">
+                <div class="timeline-item">
                     <div class="timeline-marker"></div>
                     <div class="timeline-content">
                         <div class="timeline-header">
@@ -321,7 +326,7 @@
                     </div>
                 </div>
 
-                <div class="timeline-item" data-aos="fade-right">
+                <div class="timeline-item">
                     <div class="timeline-marker"></div>
                     <div class="timeline-content">
                         <div class="timeline-header">
@@ -474,6 +479,60 @@
                                 <span>Public Outreach</span>
                                 <span>Consultation</span>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Nutrition Calculator Section -->
+    <section id="calculator" class="calculator section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Hydration Calculator</h2>
+                <div class="title-underline"></div>
+            </div>
+            <div class="calc-container animate-on-scroll">
+                <div class="calc-card">
+                    <div class="calc-info">
+                        <h3>Daily Water Intake</h3>
+                        <p>Calculate exactly how much water your body needs based on your weight and activity level.</p>
+                        <div class="calc-inputs">
+                            <div class="calc-input-group">
+                                <label for="weight">Weight (kg)</label>
+                                <input type="number" id="weight" placeholder="e.g. 70" min="20" max="300">
+                            </div>
+                            <div class="calc-input-group">
+                                <label for="activity">Activity Level</label>
+                                <select id="activity">
+                                    <option value="sedentary">Sedentary (No exercise)</option>
+                                    <option value="light">Light (1-2 days/week)</option>
+                                    <option value="moderate">Moderate (3-5 days/week)</option>
+                                    <option value="active">Active (6-7 days/week)</option>
+                                </select>
+                            </div>
+                            <button id="calculate-btn" class="btn btn-primary">
+                                <span>Calculate</span>
+                                <i class="fas fa-calculator"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="calc-result" id="calc-result">
+                        <div class="result-placeholder">
+                            <i class="fas fa-tint"></i>
+                            <p>Enter details to see results</p>
+                        </div>
+                        <div class="result-display hidden">
+                            <h4>Your Target</h4>
+                            <div class="result-value">
+                                <span id="water-value">0.0</span>
+                                <small>Liters/Day</small>
+                            </div>
+                            <div class="result-glasses">
+                                <p>Approx. <span id="glasses-value">0</span> glasses (250ml each)</p>
+                            </div>
+                            <p class="result-note">Note: This is a general estimation. Consultation with a nutritionist is recommended for specific health conditions.</p>
                         </div>
                     </div>
                 </div>
