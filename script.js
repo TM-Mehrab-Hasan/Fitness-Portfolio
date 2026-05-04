@@ -94,10 +94,10 @@ calculateBtn.addEventListener('click', () => {
         return;
     }
     
-    // Base calculation: 35ml per kg of body weight
-    let liters = (weight * 35) / 1000;
+    // Base calculation: 33ml per kg of body weight (approx. 0.5oz per lb)
+    let liters = (weight * 33) / 1000;
     
-    // Add based on activity level
+    // Add based on activity level (in liters)
     const activityMultipliers = {
         'sedentary': 0,
         'light': 0.3,
@@ -109,7 +109,9 @@ calculateBtn.addEventListener('click', () => {
     
     // Animate the result
     resultPlaceholder.classList.add('hidden');
+    resultPlaceholder.style.display = 'none'; // Force hide
     resultDisplay.classList.remove('hidden');
+    resultDisplay.style.display = 'block'; // Force show
     
     // Simple counter animation for liters
     let currentLiters = 0;
