@@ -29,7 +29,7 @@ Fitness-Portfolio/
 ├── index.html      # Structure, SEO, and Schema markup
 ├── styles.css      # Custom design and GPU-optimized animations
 ├── script.js       # Core interactivity and performance logic
-├── Formal.png      # Professional profile image
+├── main.PNG      # Professional profile image
 ├── README.md       # Project documentation
 └── .pdf files      # Academic and professional documents
 ```
