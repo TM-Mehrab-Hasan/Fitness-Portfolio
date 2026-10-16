@@ -1,51 +1,3 @@
-// ===== Ultra-Smooth Scrolling =====
-class SmoothScroll {
-    constructor() {
-        this.targetY = window.scrollY;
-        this.currentY = window.scrollY;
-        this.easing = 0.075; // Adjust this (0.05 to 0.1) for different levels of "smoothness"
-        this.isScrolling = false;
-        
-        this.init();
-    }
-
-    init() {
-        window.addEventListener('wheel', (e) => this.onWheel(e), { passive: false });
-        window.addEventListener('scroll', () => {
-            if (!this.isScrolling) {
-                this.targetY = window.scrollY;
-                this.currentY = window.scrollY;
-            }
-        });
-        this.animate();
-    }
-
-    onWheel(e) {
-        e.preventDefault();
-        this.isScrolling = true;
-        this.targetY += e.deltaY;
-        this.targetY = Math.max(0, Math.min(this.targetY, document.documentElement.scrollHeight - window.innerHeight));
-    }
-
-    animate() {
-        const diff = this.targetY - this.currentY;
-        if (Math.abs(diff) > 0.1) {
-            this.currentY += diff * this.easing;
-            window.scrollTo(0, this.currentY);
-        } else {
-            this.isScrolling = false;
-        }
-        requestAnimationFrame(() => this.animate());
-    }
-
-    scrollTo(targetY) {
-        this.isScrolling = true;
-        this.targetY = targetY;
-    }
-}
-
-const smoother = new SmoothScroll();
-
 // ===== Dark Mode Toggle =====
 const themeToggle = document.getElementById('theme-toggle');
 const body = document.body;
@@ -138,9 +90,9 @@ calculateBtn.addEventListener('click', () => {
 // ===== Preloader =====
 window.addEventListener('load', () => {
     const preloader = document.querySelector('.preloader');
-    setTimeout(() => {
+    if (preloader) {
         preloader.classList.add('hidden');
-    }, 1500);
+    }
 });
 
 // ===== Navbar Scroll Effect =====
@@ -349,53 +301,115 @@ function animateCounter(element, target) {
 // ===== Smooth Scroll =====
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
+        const targetId = this.getAttribute('href');
+        if (targetId === '#' || !targetId) return;
+        const target = document.querySelector(targetId);
         if (target) {
+            e.preventDefault();
             const headerOffset = 80;
             const elementPosition = target.getBoundingClientRect().top;
             const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
             
-            smoother.scrollTo(offsetPosition);
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
         }
     });
 });
 
 // ===== Back to Top =====
 backToTop.addEventListener('click', () => {
-    smoother.scrollTo(0);
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
 });
 
-// ===== Contact Form =====
+// ===== Contact Form with Google Apps Script Endpoint =====
 const contactForm = document.getElementById('contact-form');
+// Configured Google Apps Script Web App Endpoint for Nusrat's Portfolio
+const GAS_ENDPOINT = window.GAS_ENDPOINT || "https://script.google.com/macros/s/AKfycbxWrU9jk_3xZspKYIE_5W8UJ3wjRvrLv1cO4vYG9pd651tG1fCpxOpF4Io1MP153UGy/exec";
 
-contactForm.addEventListener('submit', (e) => {
+contactForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    const formData = new FormData(contactForm);
-    const name = formData.get('name');
-    const email = formData.get('email');
-    const subject = formData.get('subject');
-    const message = formData.get('message');
+    const submitBtn = contactForm.querySelector('.submit-btn');
+    const originalBtnHTML = submitBtn.innerHTML;
     
-    // Create mailto link
-    const mailtoLink = `mailto:nusrat.j.nisha@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`)}`;
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const subject = document.getElementById('subject').value.trim();
+    const message = document.getElementById('message').value.trim();
+    const website = document.getElementById('website') ? document.getElementById('website').value.trim() : '';
     
-    // Open email client
-    window.location.href = mailtoLink;
-    
-    // Show success message
-    const button = contactForm.querySelector('.submit-btn');
-    const originalText = button.innerHTML;
-    button.innerHTML = '<span>Message Sent!</span> <i class="fas fa-check"></i>';
-    button.style.background = 'linear-gradient(135deg, #2E7D32 0%, #4CAF50 100%)';
-    
-    setTimeout(() => {
-        button.innerHTML = originalText;
-        button.style.background = '';
+    // Bot protection honeypot
+    if (website) {
+        console.warn('Spam submission detected');
         contactForm.reset();
-    }, 3000);
+        return;
+    }
+    
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span>Sending...</span> <i class="fas fa-spinner fa-spin"></i>';
+    
+    const payload = {
+        name,
+        email,
+        subject,
+        message,
+        timestamp: new Date().toISOString()
+    };
+    
+    try {
+        // If the endpoint is still a placeholder, provide a seamless fallback to mailto while logging instructions
+        if (GAS_ENDPOINT.includes('REPLACE_WITH_YOUR_SCRIPT_ID')) {
+            console.info('Google Apps Script endpoint not configured yet. Opening email client fallback.');
+            const mailtoLink = `mailto:nusrat.j.nisha@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`)}`;
+            window.location.href = mailtoLink;
+            
+            submitBtn.innerHTML = '<span>Opening Mail Client...</span> <i class="fas fa-envelope"></i>';
+            submitBtn.style.background = 'linear-gradient(135deg, #2E7D32 0%, #4CAF50 100%)';
+            setTimeout(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnHTML;
+                submitBtn.style.background = '';
+                contactForm.reset();
+            }, 3000);
+            return;
+        }
+        
+        // Submitting to live Google Apps Script web app
+        const response = await fetch(GAS_ENDPOINT, {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers: {
+                'Content-Type': 'text/plain;charset=utf-8' // avoids CORS preflight issues with Google Apps Script
+            }
+        });
+        
+        const resData = await response.json().catch(() => ({ result: 'success' }));
+        
+        if (resData.result === 'success' || response.ok) {
+            submitBtn.innerHTML = '<span>Message Sent!</span> <i class="fas fa-check"></i>';
+            submitBtn.style.background = 'linear-gradient(135deg, #2E7D32 0%, #4CAF50 100%)';
+            contactForm.reset();
+        } else {
+            throw new Error(resData.message || 'Submission error');
+        }
+    } catch (err) {
+        console.error('Contact form submission error:', err);
+        submitBtn.innerHTML = '<span>Submission Failed</span> <i class="fas fa-exclamation-triangle"></i>';
+        submitBtn.style.background = '#d32f2f';
+    } finally {
+        setTimeout(() => {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnHTML;
+            submitBtn.style.background = '';
+        }, 4000);
+    }
 });
+
 
 // ===== Parallax Effect on Hero =====
 window.addEventListener('scroll', () => {
@@ -509,12 +523,6 @@ document.querySelectorAll('.float-icon').forEach(icon => {
     }, 2000);
 });
 
-// ===== Project Card Flip Sound Effect (Visual Feedback) =====
-document.querySelectorAll('.project-card').forEach(card => {
-    card.addEventListener('mouseenter', function() {
-        this.querySelector('.project-card-inner').style.transition = 'transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-    });
-});
 
 // ===== Dynamic Year in Footer =====
 const currentYear = new Date().getFullYear();
